@@ -8,7 +8,7 @@ import { ethers } from "ethers";
 import stakingAbi from "../../stakingAbi.json";
 import tokenAbi from "../../tokenAbi.json";
 import value from "../../value.json";
-import { useSigner, useProvider } from "wagmi";
+import { useSigner, useProvider, useContract } from "wagmi";
 import { _nameprepTableA1 } from "@ethersproject/strings/lib/idna";
 
 const DataTable = () => {
@@ -18,8 +18,19 @@ const DataTable = () => {
   );
   const { data: signer, isError, isLoading } = useSigner();
   const provider = useProvider();
-  const staking = new ethers.Contract(value.stakingAddress, stakingAbi, signer);
-  const token = new ethers.Contract(value.stakingToken, tokenAbi, signer);
+  // const staking = new ethers.Contract(value.stakingAddress, stakingAbi, signer);
+  // const token = new ethers.Contract(value.stakingToken, tokenAbi, signer);
+  const staking = useContract({
+    addressOrName: value.stakingAddress,
+    contractInterface: stakingAbi,
+    signerOrProvider: provider,
+  });
+
+  const token = useContract({
+    addressOrName: value.tokenAddress,
+    contractInterface: tokenAbi,
+    signerOrProvider: provider,
+  });
 
   const [poolId, setPoolId] = useState(0);
   const [poolLength, setPoolLength] = useState(0);
